@@ -1,8 +1,7 @@
-
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
-    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.jetbrainsCompose).apply(false)
 }
 
 kotlin {
@@ -26,11 +25,19 @@ kotlin {
     }
 
     sourceSets {
+
         commonMain.dependencies {
             implementation(libs.runtime)
             implementation(libs.foundation)
             implementation(libs.material)
             implementation(libs.ui)
+
+        }
+        all {
+            languageSettings {
+                optIn("kotlin.Experimental")
+                progressiveMode = true
+            }
         }
 
         androidMain.dependencies {

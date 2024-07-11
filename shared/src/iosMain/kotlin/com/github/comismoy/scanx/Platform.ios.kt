@@ -26,20 +26,30 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.ObjCAction
 import kotlinx.coroutines.delay
 import platform.AVFoundation.AVCaptureMetadataOutput
+import platform.AVFoundation.AVCaptureOutput
 import platform.AVFoundation.AVCaptureSession
-import platform.AVFoundation.*
-import platform.UIKit.UIView
+import platform.AVFoundation.AVCaptureDeviceInput
+import platform.AVFoundation.AVCaptureConnection
+import platform.AVFoundation.AVCaptureDevice
+import platform.AVFoundation.AVCaptureMetadataOutputObjectsDelegateProtocol
+import platform.AVFoundation.AVMetadataMachineReadableCodeObject
+import platform.AVFoundation.AVMediaTypeVideo
+import platform.AVFoundation.AVMetadataObjectTypeQRCode
 import platform.darwin.NSObject
 import platform.darwin.dispatch_get_main_queue
+import platform.UIKit.UIView
 
+@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class ScannerFactory {
     actual fun createScanner(): IScanner = IOSScanner()
 }
+
 @OptIn(ExperimentalForeignApi::class)
-class IOSScanner : NSObject(), IScanner, AVCaptureMetadataOutputObjectsDelegateProtocol {
+class IOSScanner : IScanner {
     private val captureSession = AVCaptureSession()
     private val metadataOutput = AVCaptureMetadataOutput()
     private var resultCallback: ((String) -> Unit)? = null
+    private val delegate = MetadataDelegate()
 
     init {
         val videoCaptureDevice = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
@@ -50,8 +60,12 @@ class IOSScanner : NSObject(), IScanner, AVCaptureMetadataOutputObjectsDelegateP
 
         if (captureSession.canAddOutput(metadataOutput)) {
             captureSession.addOutput(metadataOutput)
-            metadataOutput.setMetadataObjectsDelegate(this, dispatch_get_main_queue())
+            metadataOutput.setMetadataObjectsDelegate(delegate, dispatch_get_main_queue())
             metadataOutput.metadataObjectTypes = listOf(AVMetadataObjectTypeQRCode)
+        }
+
+        delegate.setOnResultCallback { result ->
+            resultCallback?.invoke(result)
         }
     }
 
@@ -66,8 +80,15 @@ class IOSScanner : NSObject(), IScanner, AVCaptureMetadataOutputObjectsDelegateP
     override fun onResult(callback: (String) -> Unit) {
         resultCallback = callback
     }
+}
 
-    @ObjCAction
+class MetadataDelegate : NSObject(), AVCaptureMetadataOutputObjectsDelegateProtocol {
+    private var onResultCallback: ((String) -> Unit)? = null
+
+    fun setOnResultCallback(callback: (String) -> Unit) {
+        onResultCallback = callback
+    }
+
     override fun captureOutput(
         output: AVCaptureOutput,
         didOutputMetadataObjects: List<*>,
@@ -76,12 +97,12 @@ class IOSScanner : NSObject(), IScanner, AVCaptureMetadataOutputObjectsDelegateP
         if (didOutputMetadataObjects.isNotEmpty()) {
             val metadataObject = didOutputMetadataObjects.first() as? AVMetadataMachineReadableCodeObject
             val result = metadataObject?.stringValue
-            result?.let { resultCallback?.invoke(it) }
+            result?.let { onResultCallback?.invoke(it) }
         }
     }
 }
 
-@OptIn(ExperimentalForeignApi::class)
+/*@OptIn(ExperimentalForeignApi::class)
 @Composable
 fun IOSScannerView(scanner: IScanner) {
     var isScanning by remember { mutableStateOf(true) }
@@ -136,5 +157,5 @@ fun ScannerFrameView(scanner: IScanner) {
         },
         modifier = Modifier.fillMaxSize()
     )
-}
+}*/
 
