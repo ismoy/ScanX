@@ -1,0 +1,50 @@
+[versions]
+agp = "8.5.0"
+appcompat = "1.7.0"
+core = "3.4.1"
+foundation = "1.6.11"
+kotlin = "2.0.0"
+compose = "1.6.8"
+androidx-material = "1.6.1"
+androidx-activityCompose = "1.9.0"
+material = "1.6.11"
+runtime = "1.6.11"
+ui = "1.6.11"
+zxingAndroidEmbedded = "4.3.0"
+coreVersion = "1.13.1"
+runtimeAndroid = "1.6.8"
+compose-compiler = "1.5.6"
+compose-plugin = "1.6.11"
+animationAndroid = "1.6.8"
+
+[libraries]
+foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "foundation" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+androidx-material = { group = "com.google.android.material", name = "material", version.ref = "androidx-material" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreVersion" }
+core = { module = "com.google.zxing:core", version.ref = "core" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
+compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
+material = { module = "org.jetbrains.compose.material:material", version.ref = "material" }
+runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "runtime" }
+ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "ui" }
+zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
+androidx-core = { group = "androidx.core", name = "core", version.ref = "coreVersion" }
+androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "runtimeAndroid" }
+androidx-animation-android = { group = "androidx.compose.animation", name = "animation-android", version.ref = "animationAndroid" }
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlinCocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+mavenPublish = {id = "maven-publich", version.ref = "agp"}
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+
